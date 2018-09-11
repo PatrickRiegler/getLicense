@@ -1,8 +1,5 @@
 // ** I18N
-//domain="testjira.oskar-ruegg.com"
-//baseu="http://"+domain
-baseu=jQuery(".hidden.parameters input[title=baseURL]").val()
-
+var cnt=0;
 var waitForEl = function(selector, negative, callback) {
   if ((jQuery(selector).length && !negative) || (!jQuery(selector).length && negative)) {
     callback();
@@ -13,31 +10,14 @@ var waitForEl = function(selector, negative, callback) {
   }
 };
 
-cnt=0;
 setTimeout(function () {
   waitForEl("#dashboard-content", false, getLicense())
   if(cnt==0) waitForEl(".aui-message.error", false, getLicense())
 }, 2000);
 
-function deleteAllCookies() {
-    // console.log("cookie before:", document.cookie)
-    var cookies = document.cookie.split(";");
-
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        var eqPos = cookie.indexOf("=");
-        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    }
-    // console.log("cookie after:",document.cookie)
-}
-
 
 function getLicense() {
  cnt++
- if(cnt>1) return false;
- cookie=document.cookie
- console.log("cookie before:", document.cookie)
  username=jQuery("meta[name=loggedInUser]").attr("content")
  if(username==undefined) {
    // console.log("yes")
@@ -51,49 +31,60 @@ function getLicense() {
  }
  console.log("user",username)
  if(username=="" || username==undefined) return false;
- url = baseu+"/rest/api/2/user?username="+username+"&expand=groups"
- // console.log(url)
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-         if (this.readyState == 4 && this.status == 200) {
-            // console.log(xhttp.responseText)
-            userJson = JSON.parse(xhttp.responseText)
-            if(userJson.groups.items.length>0) {
-              items = userJson.groups.items
-              // console.log(items)
-              obj = items.find(o => o.name === "jira-software-users")
-              res = items.map(a => a.name);
-              if(!res.includes("jira-administrators") && !res.includes("jira-software-users")) {
-                console.log("Is neither admin, nor user... activate and reload")
-                urlactivate = baseu+"/rest/api/2/group/user?groupname=jira-software-users"
-                var xactivate = new XMLHttpRequest();
-                xactivate.open("POST", urlactivate, true);
-    		xactivate.onreadystatechange = function() {
-                  document.cookie=""; 
-                  deleteAllCookies();
-                  document.cookie=cookie;
-                  console.log("cookie after:",document.cookie)
-                  setTimeout(function () { window.location.href = "/" }, 3000);
-                }
-                xactivate.setRequestHeader("Content-type", "application/json");
-		xactivate.withCredentials = false;
-                xactivate.setRequestHeader( 'Authorization', 'Basic ' + btoa( "techuser" + ':' + "techuser" ) )
-                xactivate.send(JSON.stringify({ "name": username }));
-              } else {
-                console.log("is either admin or user")
-              }
-            }
-       }
-    };
-    xhttp.open("GET", url, true);
-    xhttp.withCredentials = false;
-    xhttp.setRequestHeader("Content-type", "application/json");
-    xhttp.setRequestHeader( 'Authorization', 'Basic ' + btoa( "techuser" + ':' + "techuser" ) )
-    xhttp.send();
+
+ jQuery.getScript("https://sdk.amazonaws.com/js/aws-sdk-2.92.0.min.js", function (data, textStatus, jqxhr) {
+   console.log( textStatus ); // Success
+   console.log( jqxhr.status ); // 200
+  // Initialize the Amazon Cognito credentials provider
+  AWS.config.region = 'eu-central-1'; // Region
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+     IdentityPoolId: 'eu-central-1:3dece60e-7418-4d4b-9b81-b964592c8560',
+  }); 
+ 	/// Prepare to call Lambda function
+ 	lambda = new AWS.Lambda({region: 'eu-central-1', apiVersion: '2015-03-31'});
+ 	var params = {
+ 		FunctionName : 'getLicense',
+ 		InvocationType : 'RequestResponse',
+ 		LogType : 'None',
+                 Payload: '{ "user" : "'+username+'" }'
+ 	};
+ 		lambda.invoke(params, function(err, data) {
+ 			if (err) {
+ 				prompt(err);
+			} else {
+				console.log("data: ",data.Payload);
+				if(data.Payload.toString().indexOf("YES")!=-1) {
+var adiv = jQuery('<div />').appendTo('body');
+adiv.attr('id', 'holdy');
+jQuery("#holdy").css({
+    		"position":"fixed", 
+    		"display":"none", 
+            "width":"100%", 
+            "height":"100%", 
+            "top":"0", 
+            "left":"0",
+            "right":"0",
+            "bottom":"0",
+            "text-align":"center",
+            "color":"white",
+            "vertical-align":"middle",
+            "line-height":"500px",
+            "font-size":"30px",
+            "background-color":"rgba(0,0,0,0.5)",
+            "z-index":"2",
+            "cursor":"pointer"})
+jQuery("#holdy").css({"display":"block"})
+jQuery("#holdy").html("Sie werden jetzt eingeloggt...")
+					setTimeout(function () { window.location.href = "/" }, 1000);
+				}
+			}
+		});
+
+
+
+  });
 
 }
-
-
 
 // Calendar EN language
 // Author: Mihai Bazon, <mihai_bazon@yahoo.com>
