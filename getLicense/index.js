@@ -1,5 +1,7 @@
 var request = require('request');
 var _ = require('lodash');
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+var btoa = require('btoa');
 
 // rootUrl = "http://devjira.oskar-ruegg.com"
 rootUrl = "http://testjira.oskar-ruegg.com"
@@ -16,6 +18,62 @@ testMode = true;
 var prettyjson = require('prettyjson'); // Un-uglify JSON output
  
 exports.handler = (event, context, callback) => {
-  console.log("yes...")
-      callback(null, 'Script Successful');
+ user = event.user
+ username = user
+ baseu = (event.url) ? event.url : "http://testjira.oskar-ruegg.com";
+ console.log("user: ",user)
+ url = baseu+"/rest/api/2/user?username="+username+"&expand=groups"
+ console.log(url)
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+         if (this.readyState == 4 && this.status == 200) {
+            console.log(xhttp.responseText)
+            userJson = JSON.parse(xhttp.responseText)
+            if(userJson.groups.items.length>0) {
+              items = userJson.groups.items
+              // console.log(items)
+              obj = items.find(o => o.name === "jira-software-users")
+              res = items.map(a => a.name);
+              if(!res.includes("jira-administrators") && !res.includes("jira-software-users")) {
+                console.log("Is neither admin, nor user... activate and reload")
+                urlactivate = baseu+"/rest/api/2/group/user?groupname=jira-software-users"
+               console.log("urlactivate: ",urlactivate)
+request.post({
+          headers: {'Content-Type' : 'application/json' },
+          url:     urlactivate,
+          timeout: 10000, 
+          json: { "name": username }
+}, function (error,response,body) {
+console.log('error:', error); // Print the error if one occurred
+  console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+  console.log('body:', body); // Print the HTML for the Google homepage.
+                  setTimeout(function() { callback(null, "YES"); }, 500);
+}).auth('techuser', 'techuser', true);
+/*
+                var xactivate = new XMLHttpRequest();
+                xactivate.open("POST", urlactivate, true);
+    		xactivate.onreadystatechange = function(error, response, body) {
+                  console.log("error: ",error)
+                  console.log("body: ",body)
+                  console.log("response: ",response)
+                  console.log("responseText: ",xactivate.responseText)
+                  setTimeout(function() { callback(null, "YES"); }, 500);
+                }
+                xactivate.setRequestHeader("Content-type", "application/json");
+                xactivate.setRequestHeader( 'Authorization', 'Basic ' + btoa( "techuser" + ':' + "techuser" ) )
+                console.log("payload: ",JSON.stringify({ "name": username }))
+                xactivate.send(JSON.stringify({ "name": username }));
+*/
+              } else {
+                console.log("is either admin or user")
+                callback(null, "NO");
+              }
+            }
+       }
+    };
+    xhttp.open("GET", url, true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.setRequestHeader( 'Authorization', 'Basic ' + btoa( "techuser" + ':' + "techuser" ) )
+    xhttp.send();
+
 }
