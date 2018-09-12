@@ -39,6 +39,15 @@ function getLicense() {
  console.log("origin",origin)
 
  jQuery.getScript("https://sdk.amazonaws.com/js/aws-sdk-2.92.0.min.js", function (data, textStatus, jqxhr) {
+
+ (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,"script","https://www.google-analytics.com/analytics.js","ga");
+
+  ga("create", "UA-105697068-1", {"siteSpeedSampleRate": 100});
+
+
    console.log( textStatus ); // Success
    console.log( jqxhr.status ); // 200
   // Initialize the Amazon Cognito credentials provider
@@ -60,6 +69,13 @@ function getLicense() {
 			} else {
 				console.log("data: ",data.Payload);
 				if(data.Payload.toString().indexOf("YES")!=-1) {
+
+ga("set", "dimension1", username);
+ga('send', 'pageview', {
+  'page': '/getLicense',
+  'title': 'getLicense'
+});
+
 var adiv = jQuery('<div />').appendTo('body');
 adiv.attr('id', 'holdy');
 jQuery("#holdy").css({

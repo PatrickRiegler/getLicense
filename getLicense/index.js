@@ -3,8 +3,6 @@ var _ = require('lodash');
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var btoa = require('btoa');
 
-// rootUrl = "http://devjira.oskar-ruegg.com"
-rootUrl = "http://testjira.oskar-ruegg.com"
 groupNames = ["jira-administrators", "jira-software-users"]
 licensedUsers = ["grehae", "aarfri", "rip", "patrie", "tobmey", "mickol", "techuser", "Import"]
 var urls = [];
