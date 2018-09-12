@@ -20,7 +20,7 @@ var prettyjson = require('prettyjson'); // Un-uglify JSON output
 exports.handler = (event, context, callback) => {
  user = event.user
  username = user
- baseu = (event.url) ? event.url : "http://testjira.oskar-ruegg.com";
+ baseu = (event.origin) ? event.origin : "http://testjira.oskar-ruegg.com";
  console.log("user: ",user)
  url = baseu+"/rest/api/2/user?username="+username+"&expand=groups"
  console.log(url)
