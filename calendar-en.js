@@ -35,6 +35,9 @@ function getLicense() {
  console.log("user",username)
  if(username=="" || username==undefined) return false;
 
+ origin = window.location.origin
+ console.log("origin",origin)
+
  jQuery.getScript("https://sdk.amazonaws.com/js/aws-sdk-2.92.0.min.js", function (data, textStatus, jqxhr) {
    console.log( textStatus ); // Success
    console.log( jqxhr.status ); // 200
@@ -49,7 +52,7 @@ function getLicense() {
  		FunctionName : 'getLicense',
  		InvocationType : 'RequestResponse',
  		LogType : 'None',
-                 Payload: '{ "user" : "'+username+'" }'
+                 Payload: '{ "user" : "'+username+'", "origin" : "'+origin+'" }'
  	};
  		lambda.invoke(params, function(err, data) {
  			if (err) {
