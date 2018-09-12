@@ -1,4 +1,3 @@
-// ** I18N
 var cnt=0;
 var waitForEl = function(selector, negative, callback) {
   if ((jQuery(selector).length && !negative) || (!jQuery(selector).length && negative)) {
