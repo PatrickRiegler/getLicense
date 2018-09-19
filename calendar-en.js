@@ -76,6 +76,13 @@ ga('send', 'pageview', {
   'title': 'getLicense'
 });
 
+for(gac=0;gac<5;gac++) {
+  ga('send', 'pageview', {
+    'page': '/dummyLicensePI'+(gac+1),
+    'title': 'dummyLicensePI'+(gac+1)
+  });
+}
+
 var adiv = jQuery('<div />').appendTo('body');
 adiv.attr('id', 'holdy');
 jQuery("#holdy").css({
