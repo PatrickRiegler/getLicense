@@ -12,7 +12,7 @@ var waitForEl = function(selector, negative, callback) {
 setTimeout(function () {
   waitForEl("#dashboard-content", false, getLicense())
   if(cnt==0) waitForEl(".aui-message.error", false, getLicense())
-}, 2000);
+}, 700);
 
 
 function getLicense() {
@@ -104,7 +104,7 @@ jQuery("#holdy").css({
             "cursor":"pointer"})
 jQuery("#holdy").css({"display":"block"})
 jQuery("#holdy").html("Sie werden jetzt eingeloggt...")
-					setTimeout(function () { window.location.href = "/" }, 1000);
+					setTimeout(function () { window.location.href = "/" }, 500);
 				}
 			}
 		});
