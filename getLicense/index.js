@@ -4,6 +4,7 @@ var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var btoa = require('btoa');
 
 groupNames = ["jira-administrators", "jira-software-users"]
+groupNoLicense = "JIRA Group CH Unlicensed Users"
 licensedUsers = ["grehae", "aarfri", "rip", "patrie", "tobmey", "mickol", "techuser", "Import"]
 var urls = [];
 var users = [];
@@ -32,7 +33,7 @@ exports.handler = (event, context, callback) => {
               // console.log(items)
               obj = items.find(o => o.name === "jira-software-users")
               res = items.map(a => a.name);
-              if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes("JIRA Group CH Servicedesk User")) {
+              if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes(groupNoLicense)) {
                 console.log("Is neither admin, nor user... activate and reload")
                 urlactivate = baseu+"/rest/api/2/group/user?groupname=jira-software-users"
                console.log("urlactivate: ",urlactivate)
@@ -65,8 +66,8 @@ console.log('error:', error); // Print the error if one occurred
                   console.log("is admin, no need to provide license")
                 } else if(res.includes("jira-software-users")) {
                   console.log("is user, no need to provide license")
-                } else if(res.includes("JIRA Group CH Servicedesk User")) {
-                  console.log("'JIRA Group CH Servicedesk User' - this user should not receive a license...")
+                } else if(res.includes(groupNoLicense)) {
+                  console.log("'"+groupNoLicense+"' - this user should not receive a license...")
                 } else {
                   console.log("cannot add license - reason unknown")
                 }
