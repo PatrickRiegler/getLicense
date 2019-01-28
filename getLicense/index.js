@@ -32,7 +32,7 @@ exports.handler = (event, context, callback) => {
               // console.log(items)
               obj = items.find(o => o.name === "jira-software-users")
               res = items.map(a => a.name);
-              if(!res.includes("jira-administrators") && !res.includes("jira-software-users")) {
+              if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes("JIRA Group CH Servicedesk User")) {
                 console.log("Is neither admin, nor user... activate and reload")
                 urlactivate = baseu+"/rest/api/2/group/user?groupname=jira-software-users"
                console.log("urlactivate: ",urlactivate)
@@ -47,7 +47,6 @@ console.log('error:', error); // Print the error if one occurred
   console.log('body:', body); // Print the HTML for the Google homepage.
                   setTimeout(function() { callback(null, "YES"); }, 500);
 }).auth('techuser', 'techuser', true);
-/*
                 var xactivate = new XMLHttpRequest();
                 xactivate.open("POST", urlactivate, true);
     		xactivate.onreadystatechange = function(error, response, body) {
@@ -61,9 +60,16 @@ console.log('error:', error); // Print the error if one occurred
                 xactivate.setRequestHeader( 'Authorization', 'Basic ' + btoa( "techuser" + ':' + "techuser" ) )
                 console.log("payload: ",JSON.stringify({ "name": username }))
                 xactivate.send(JSON.stringify({ "name": username }));
-*/
               } else {
-                console.log("is either admin or user")
+                if(res.includes("jira-administrators")) {
+                  console.log("is admin, no need to provide license")
+                } else if(res.includes("jira-software-users")) {
+                  console.log("is user, no need to provide license")
+                } else if(res.includes("JIRA Group CH Servicedesk User")) {
+                  console.log("'JIRA Group CH Servicedesk User' - this user should not receive a license...")
+                } else {
+                  console.log("cannot add license - reason unknown")
+                }
                 callback(null, "NO");
               }
             }
