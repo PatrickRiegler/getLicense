@@ -72,7 +72,8 @@ console.log('error:', error); // Print the error if one occurred
                 }
                 callback(null, "NO");
               }
-            }
+            }  
+            setTimeout(function() { callback(null, "NO Groups Found"); }, 500);
        }
     };
     xhttp.open("GET", url, true);
