@@ -33,7 +33,10 @@ exports.handler = (event, context, callback) => {
               // console.log(items)
               obj = items.find(o => o.name === "jira-software-users")
               res = items.map(a => a.name);
-              if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes(groupNoLicense)) {
+              var containsAlle = res.filter(function(item){
+                return typeof item == 'string' && item.indexOf("ALLE") > -1;            
+              });
+              if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes(groupNoLicense) && containsAlle.length>0) {
                 console.log("Is neither admin, nor user... activate and reload")
                 urlactivate = baseu+"/rest/api/2/group/user?groupname=jira-software-users"
                console.log("urlactivate: ",urlactivate)
@@ -51,10 +54,12 @@ console.log('error:', error); // Print the error if one occurred
                 var xactivate = new XMLHttpRequest();
                 xactivate.open("POST", urlactivate, true);
     		xactivate.onreadystatechange = function(error, response, body) {
+/*
                   console.log("error: ",error)
                   console.log("body: ",body)
                   console.log("response: ",response)
                   console.log("responseText: ",xactivate.responseText)
+*/
                   setTimeout(function() { callback(null, "YES"); }, 500);
                 }
                 xactivate.setRequestHeader("Content-type", "application/json");
@@ -68,6 +73,14 @@ console.log('error:', error); // Print the error if one occurred
                   console.log("is user, no need to provide license")
                 } else if(res.includes(groupNoLicense)) {
                   console.log("'"+groupNoLicense+"' - this user should not receive a license...")
+                } else if(!containsAlle.length>0) {
+                  console.log("no *ALLE* group - therefore an external user, that shall not get a license")
+/*
+                  console.log("res",res)
+                  console.log(res.includes("*ALLE*"))
+                  console.log("containsAlle",containsAlle)
+                  console.log("containsAlle.length",containsAlle.length)
+*/
                 } else {
                   console.log("cannot add license - reason unknown")
                 }
