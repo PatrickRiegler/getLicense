@@ -34,7 +34,7 @@ exports.handler = (event, context, callback) => {
               obj = items.find(o => o.name === "jira-software-users")
               res = items.map(a => a.name);
               var containsAlle = res.filter(function(item){
-                return typeof item == 'string' && item.indexOf("ALLE") > -1;            
+                return typeof item == 'string' && item.indexOf("-ALL") > -1;            
               });
               if(!res.includes("jira-administrators") && !res.includes("jira-software-users") && !res.includes(groupNoLicense) && containsAlle.length>0) {
                 console.log("Is neither admin, nor user... activate and reload")
@@ -74,10 +74,10 @@ console.log('error:', error); // Print the error if one occurred
                 } else if(res.includes(groupNoLicense)) {
                   console.log("'"+groupNoLicense+"' - this user should not receive a license...")
                 } else if(!containsAlle.length>0) {
-                  console.log("no *ALLE* group - therefore an external user, that shall not get a license")
+                  console.log("no *-ALL* group - therefore an external user, that shall not get a license")
 /*
                   console.log("res",res)
-                  console.log(res.includes("*ALLE*"))
+                  console.log(res.includes("*-ALL*"))
                   console.log("containsAlle",containsAlle)
                   console.log("containsAlle.length",containsAlle.length)
 */
