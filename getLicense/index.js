@@ -75,12 +75,12 @@ console.log('error:', error); // Print the error if one occurred
                   console.log("'"+groupNoLicense+"' - this user should not receive a license...")
                 } else if(!containsAlle.length>0) {
                   console.log("no *-ALL* group - therefore an external user, that shall not get a license")
-/*
+
                   console.log("res",res)
                   console.log(res.includes("*-ALL*"))
                   console.log("containsAlle",containsAlle)
                   console.log("containsAlle.length",containsAlle.length)
-*/
+
                 } else {
                   console.log("cannot add license - reason unknown")
                 }
