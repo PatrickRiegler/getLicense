@@ -1,7 +1,9 @@
 var cnt=0;
 var waitForEl = function(selector, negative, callback) {
   if ((jQuery(selector).length && !negative) || (!jQuery(selector).length && negative)) {
-    callback();
+    
+	  try {callback();}
+	  catch {}
   } else {
     setTimeout(function() {
       waitForEl(selector, negative, callback);
