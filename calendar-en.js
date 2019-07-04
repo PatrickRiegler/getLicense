@@ -3,7 +3,7 @@ var waitForEl = function(selector, negative, callback) {
   if ((jQuery(selector).length && !negative) || (!jQuery(selector).length && negative)) {
     
 	  try {callback();}
-	  catch {}
+	  catch (e) {getLicense();}
   } else {
     setTimeout(function() {
       waitForEl(selector, negative, callback);
