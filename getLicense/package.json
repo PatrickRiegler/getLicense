@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "prettyjson": "^1.2.1",
     "xmlhttprequest": "^1.8.0",
     "btoa": "^1.2.0",
